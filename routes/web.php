@@ -16,3 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('home');
 });
+
+
+
+Route::get('/videos/new', [\App\Http\Controllers\VideoController::class, 'create']);
+Route::post('/videos/new', [\App\Http\Controllers\VideoController::class, 'store']);
+
+
+
+Route::get('/videos/{filename}', [\App\Http\Controllers\VideoController::class, 'show']);
+
