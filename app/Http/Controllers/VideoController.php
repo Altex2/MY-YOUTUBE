@@ -15,7 +15,11 @@ class VideoController extends Controller
      */
     public function index()
     {
+        $videos = Video::query()->get();
 
+        return view('home',[
+            'videos' => $videos
+        ]);
     }
 
 
@@ -35,11 +39,25 @@ class VideoController extends Controller
         $credentials = $request->validate([
             'title' => 'required|string',
             'description' => 'required|string',
-            'video_file' => 'required', // 50MB max
+            'video_file' => 'required|file| mimes:mp4,mov,ogg,qt | max:50000',
         ]);
 
         // If validation passes, check the uploaded file
-        dd($request->file('video_file'));
+//        dd($request->file('video_file'));
+
+        $path = Storage::disk('public')->put('videos', $request['video_file']);
+
+
+        Video::create([
+            'title' => $credentials['title'],
+            'description' => $credentials['description'],
+            'video' => $path,
+        ]);
+
+        $videos = Video::query()->get();
+
+        return redirect('/');
+
     }
 
 
