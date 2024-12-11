@@ -13,58 +13,36 @@
     </div>
 
 
-    <div class="grid grid-cols-4 2xl:grid-cols-5 mx-10 gap-6 my-10">
-        @foreach($videos as $video)
-            {{--            <div class="flex flex-col min-w-64 min-h-64 bg-green-700 p-6">--}}
+    @if($videos->all() != null)
+        <div class="grid grid-cols-4 2xl:grid-cols-5 mx-10 gap-6 my-10">
+            @foreach($videos as $video)
+                <a href="/video/{{$video['id']}}"
+                   class="flex flex-col  min-w-64 min-h-64 bg-gray-900 p-2 rounded-lg shadow-lg">
+                    <div class="relative hover:brightness-50">
+                        <img
+                            src="{{asset('storage/' . $video['thumbnail'])}}"
+                            alt="Thumbnail"
+                            class="h-44 w-full object-contain bg-black rounded-t-lg"
+                        />
 
-            {{--                <p class="">{{$video['title']}}</p>--}}
-            {{--                <video controls class=" h-44 w-64 bg-black">--}}
+                    </div>
+                    <div
+                        class=" my-3 text-white font-bold text-lg">
+                        <p>{{$video['title']}}</p>
+                    </div>
+                    <div class="text-white text-sm">
+                        <p>457K views • 1 month ago</p>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    @else
+        <div class="flex flex-col justify-center items-center  text-center mt-10 mb-6">
+            <h1 class="text-2xl font-medium italic text-red-500">There are NO videos on the website</h1>
+            <p class="text-cyan-500">Add a video right now :3</p>
+        </div>
+    @endif
 
-            {{--                    <source src="{{asset('storage/' . $video['video'])}}" type="video/mp4"/>--}}
-
-            {{--                    Download the--}}
-            {{--                    <a href="{{asset('storage/' . $video['video'])}}">MP4</a>--}}
-            {{--                    video.--}}
-            {{--                </video>--}}
-            {{--            </div>--}}
-
-            <a href="/video/{{$video['id']}}" class="flex flex-col  min-w-64 min-h-64 bg-gray-900 p-2 rounded-lg shadow-lg">
-                <!-- Thumbnail with text overlay -->
-                <div class="relative hover:brightness-50">
-                    <img
-                        src="{{asset('storage/' . $video['thumbnail'])}}"
-                        alt="Thumbnail"
-                        class="h-44 w-full object-contain bg-black rounded-t-lg"
-                    />
-
-                </div>
-
-                {{--                <!-- Video controls -->--}}
-                {{--                <video--}}
-                {{--                    controls--}}
-                {{--                    class="h-44 w-full bg-black mt-4 rounded-lg"--}}
-                {{--                >--}}
-                {{--                    <source--}}
-                {{--                        src="{{asset('storage/' . $video['video'])}}"--}}
-                {{--                        type="video/mp4"--}}
-                {{--                    />--}}
-                {{--                    Download the--}}
-                {{--                    <a href="{{asset('storage/' . $video['video'])}}">MP4</a>--}}
-                {{--                    video.--}}
-                {{--                </video>--}}
-
-                <!-- Footer -->
-                <div
-                    class=" my-3 text-white font-bold text-lg">
-                    <p>{{$video['title']}}</p>
-                </div>
-                <div class="text-white text-sm">
-                    <p>457K views • 1 month ago</p>
-                </div>
-            </a>
-
-        @endforeach
-    </div>
 
     <script>
         const videos = document.querySelectorAll('.video');

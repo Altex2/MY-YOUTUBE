@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('channels', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\User::class);
             $table->string('name');
             $table->integer('subscribers');
             $table->timestamps();
