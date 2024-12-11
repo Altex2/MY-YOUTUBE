@@ -1,54 +1,67 @@
 <x-layout>
-    <h1 class="text-center text-red-500 text-2xl uppercase">test</h1>
-    <div class="flex justify-center items-center my-6">
-        <a href="/videos/new" class="px-6 py-4 bg-blue-400 rounded-lg">New Video...</a>
+    <div class="h-24 bg-fuchsia-400 flex flex-row justify-between items-center px-10 border-b-2 border-black">
+        <a href="/"><img src="{{asset('images/logo-MyTube.svg')}}" alt="logo" class="h-24"></a>
+
+        <div class="w-[400px] border-2 border-black rounded-lg flex flex-row justify-center items-center ">
+            <input type="text" placeholder="Search for something" class="h-12 ml-7 mr-7
+        placeholder-black bg-transparent placeholder:text-center w-[400px] outline-none border-none">
+            <button type="submit" class="px-3 py-2 bg-black text-white rounded-lg mr-10 ">Search</button>
+        </div>
+        <div class="flex justify-center items-center my-6">
+            <a href="/videos/new" class="px-6 py-4 bg-black rounded-lg text-white">New Video...</a>
+        </div>
     </div>
-    <div class="grid grid-cols-4 mx-10 gap-6 my-10">
+
+
+    <div class="grid grid-cols-4 2xl:grid-cols-5 mx-10 gap-6 my-10">
         @foreach($videos as $video)
-{{--            <div class="flex flex-col min-w-64 min-h-64 bg-green-700 p-6">--}}
+            {{--            <div class="flex flex-col min-w-64 min-h-64 bg-green-700 p-6">--}}
 
-{{--                <p class="">{{$video['title']}}</p>--}}
-{{--                <video controls class=" h-44 w-64 bg-black">--}}
+            {{--                <p class="">{{$video['title']}}</p>--}}
+            {{--                <video controls class=" h-44 w-64 bg-black">--}}
 
-{{--                    <source src="{{asset('storage/' . $video['video'])}}" type="video/mp4"/>--}}
+            {{--                    <source src="{{asset('storage/' . $video['video'])}}" type="video/mp4"/>--}}
 
-{{--                    Download the--}}
-{{--                    <a href="{{asset('storage/' . $video['video'])}}">MP4</a>--}}
-{{--                    video.--}}
-{{--                </video>--}}
-{{--            </div>--}}
-            <div class="flex flex-col min-w-64 min-h-64 bg-gray-900 p-2 rounded-lg shadow-lg">
+            {{--                    Download the--}}
+            {{--                    <a href="{{asset('storage/' . $video['video'])}}">MP4</a>--}}
+            {{--                    video.--}}
+            {{--                </video>--}}
+            {{--            </div>--}}
+
+            <a href="/video/{{$video['id']}}" class="flex flex-col  min-w-64 min-h-64 bg-gray-900 p-2 rounded-lg shadow-lg">
                 <!-- Thumbnail with text overlay -->
-                <div class="relative">
+                <div class="relative hover:brightness-50">
                     <img
                         src="{{asset('storage/' . $video['thumbnail'])}}"
                         alt="Thumbnail"
-                        class="h-44 w-full object-cover rounded-t-lg"
+                        class="h-44 w-full object-contain bg-black rounded-t-lg"
                     />
-                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 text-white font-bold text-lg">
-                        <p>{{$video['title']}}</p>
-                    </div>
+
                 </div>
 
-                <!-- Video controls -->
-                <video
-                    controls
-                    class="h-44 w-full bg-black mt-4 rounded-lg"
-                >
-                    <source
-                        src="{{asset('storage/' . $video['video'])}}"
-                        type="video/mp4"
-                    />
-                    Download the
-                    <a href="{{asset('storage/' . $video['video'])}}">MP4</a>
-                    video.
-                </video>
+                {{--                <!-- Video controls -->--}}
+                {{--                <video--}}
+                {{--                    controls--}}
+                {{--                    class="h-44 w-full bg-black mt-4 rounded-lg"--}}
+                {{--                >--}}
+                {{--                    <source--}}
+                {{--                        src="{{asset('storage/' . $video['video'])}}"--}}
+                {{--                        type="video/mp4"--}}
+                {{--                    />--}}
+                {{--                    Download the--}}
+                {{--                    <a href="{{asset('storage/' . $video['video'])}}">MP4</a>--}}
+                {{--                    video.--}}
+                {{--                </video>--}}
 
-                <!-- Footer or description -->
-                <div class="mt-4 text-white text-sm">
+                <!-- Footer -->
+                <div
+                    class=" my-3 text-white font-bold text-lg">
+                    <p>{{$video['title']}}</p>
+                </div>
+                <div class="text-white text-sm">
                     <p>457K views • 1 month ago</p>
                 </div>
-            </div>
+            </a>
 
         @endforeach
     </div>

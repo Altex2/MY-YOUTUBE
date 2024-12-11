@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('videos', function (Blueprint $table) {
+        Schema::create('channels', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Channel::class);
-            $table->string('title');
-            $table->text('description');
-            $table->string('video');
-            $table->string('thumbnail');
-            $table->integer('likes');
-            $table->integer('views');
+            $table->string('name');
+            $table->integer('subscribers');
             $table->timestamps();
         });
     }
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('videos');
+        Schema::dropIfExists('channels');
     }
 };
