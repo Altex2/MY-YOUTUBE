@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateVideoRequest;
 use App\Models\Video;
 use FFMpeg\FFMpeg;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -20,7 +21,7 @@ class VideoController extends Controller
     public function individual($id){
         $video = Video::findOrFail($id);
         $videos = Video::query()->get();
-        return view('individual-video',[
+        return view('video.individual-video',[
             'video' => $video,
             'videos' => $videos,
         ]);
@@ -28,6 +29,17 @@ class VideoController extends Controller
     public function index()
     {
         $videos = Video::query()->get();
+
+        if(Auth::check()){
+            $user = Auth::user();
+            $channel = $user->channel;
+
+            return view('home', [
+                'videos' => $videos,
+                'user' => $user,
+                'channel' => $channel,
+            ]);
+        }
 
         return view('home', [
             'videos' => $videos
@@ -76,6 +88,10 @@ class VideoController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        $channel = $user->channel;
+
         // Step 1: Validate the input
         $credentials = $request->validate([
             'title' => 'required|string',
@@ -105,12 +121,20 @@ class VideoController extends Controller
 
         // Step 4: Generate a thumbnail after successful video upload
         try {
+//            $ffmpeg = \FFMpeg\FFMpeg::create([
+//                'ffmpeg.binaries'  => '/opt/homebrew/bin/ffmpeg',
+//                'ffprobe.binaries' => '/opt/homebrew/bin/ffprobe',
+//                'timeout'          => 3600,
+//                'ffmpeg.threads'   => 12,
+//            ]);
+
             $ffmpeg = \FFMpeg\FFMpeg::create([
-                'ffmpeg.binaries'  => '/opt/homebrew/bin/ffmpeg',
-                'ffprobe.binaries' => '/opt/homebrew/bin/ffprobe',
-                'timeout'          => 3600,
-                'ffmpeg.threads'   => 12,
+                'ffmpeg.binaries'  => 'C:\\ffmpeg\\bin\\ffmpeg.exe', // Path to ffmpeg.exe
+                'ffprobe.binaries' => 'C:\\ffmpeg\\bin\\ffprobe.exe', // Path to ffprobe.exe
+                'timeout'          => 3600, // Set timeout to 1 hour
+                'ffmpeg.threads'   => 12,   // Number of threads
             ]);
+
 
             $video = $ffmpeg->open($videoFullPath);
             $video->frame(\FFMpeg\Coordinate\TimeCode::fromSeconds(0))
@@ -121,10 +145,13 @@ class VideoController extends Controller
 
         // Step 5: Save the video and thumbnail paths in the database
         Video::create([
+            'channel_id' => $channel['id'],
             'title' => $credentials['title'],
             'description' => $credentials['description'],
             'video' => $videoPath, // Relative path to the video
             'thumbnail' => 'thumbnails/' . $thumbnailFileName, // Relative path to the thumbnail
+            'likes' => 0,
+            'views' => 0,
         ]);
 
         return redirect('/')->with('success', 'Video uploaded and thumbnail generated successfully!');

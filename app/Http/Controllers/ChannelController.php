@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreChannelRequest;
 use App\Http\Requests\UpdateChannelRequest;
 use App\Models\Channel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class ChannelController extends Controller
 {
@@ -21,15 +24,27 @@ class ChannelController extends Controller
      */
     public function create()
     {
-        //
+        return view('channel.create-channel');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreChannelRequest $request)
+    public function store(Request $request)
     {
-        //
+        $credentials = $request->validate([
+            'name' => 'required|string'
+        ]);
+
+        $user = Auth::user();
+
+        $channel = Channel::create([
+            'user_id' => $user['id'],
+            'name' => $credentials['name'],
+            'subscribers' => 0,
+        ]);
+
+        return redirect('/');
     }
 
     /**

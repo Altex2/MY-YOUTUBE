@@ -10,7 +10,7 @@
     </div>
 
 
-    <div class="flex flex-row">
+    <div class="flex flex-row justify-center">
         <div class="flex flex-col">
             <div class="flex flex-col w-[900px] h-[450px] bg-gray-600  ml-10 mr-4 mt-10 rounded-lg">
                 <!-- Video controls -->

@@ -1,7 +1,7 @@
 <x-layout>
     <div>
-        <h1 class="text-center m-10 text-2xl font-bold">Upload a video</h1>
-        <form action="/register" method="POST">
+        <h1 class="text-center m-10 text-2xl font-bold">Create a channel</h1>
+        <form action="/channel/create" method="POST">
             @csrf
             <div class="flex flex-col justify-center items-center space-y-6">
                 <div class="flex flex-col">

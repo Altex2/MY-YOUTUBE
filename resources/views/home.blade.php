@@ -7,9 +7,46 @@
         placeholder-black bg-transparent placeholder:text-center w-[400px] outline-none border-none">
             <button type="submit" class="px-3 py-2 bg-black text-white rounded-lg mr-10 ">Search</button>
         </div>
-        <div class="flex justify-center items-center my-6">
-            <a href="/videos/new" class="px-6 py-4 bg-black rounded-lg text-white">New Video...</a>
+
+        <div class="flex flex-row justify-start items-center my-6 space-x-4 h-16 w-72">
+            @guest
+                <a href="/register" class="px-6 py-4 bg-black rounded-lg text-white">
+                    Create Account
+                </a>
+                <a href="/login" class="px-6 py-4 bg-black rounded-lg text-white">
+                    Login
+                </a>
+            @endguest
+            @auth
+                @if($channel != null)
+                    <div class="flex flex-col">
+                        <button id="active-channel-button"
+                                class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-blue-600">{{$channel['name']}}</button>
+                        <div class="hidden absolute translate-y-16 space-y-4" id="active-channel-div">
+                            <a href="/videos/new" class="px-6 py-4 bg-black rounded-lg text-white">New Video...</a>
+                            <form action="/logout" method="POST">
+                                @csrf
+                                <button type="submit" class="px-6 py-4 bg-black rounded-lg text-white">Log Out</button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <div class="flex flex-col">
+                        <button id="active-channel-button"
+                                class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-blue-600">No Channel!</button>
+                        <div class="hidden absolute translate-y-16 space-y-4" id="active-channel-div">
+                            <a href="/channel/create" class="px-6 py-4 bg-black rounded-lg text-white">New Channel...</a>
+                            <form action="/logout" method="POST">
+                                @csrf
+                                <button type="submit" class="px-6 py-4 bg-black rounded-lg text-white">Log Out</button>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+            @endauth
         </div>
+
+
     </div>
 
 
@@ -57,5 +94,26 @@
                 video.currentTime = 0;
             });
         });
+
+
+        const no_channel = document.getElementById('no-channel-button');
+        const no_channel_div = document.getElementById('no-channel-div');
+
+
+        if (no_channel) {
+            no_channel.addEventListener('click', () => {
+                no_channel_div.classList.toggle('hidden');
+            })
+        }
+
+        const active_channel = document.getElementById('active-channel-button');
+        const active_channel_div = document.getElementById('active-channel-div');
+
+        if (active_channel) {
+            active_channel.addEventListener('click', () => {
+                active_channel_div.classList.toggle('hidden');
+            })
+        }
+
     </script>
 </x-layout>
