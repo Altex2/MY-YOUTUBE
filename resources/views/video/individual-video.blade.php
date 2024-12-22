@@ -1,13 +1,5 @@
 <x-layout>
-    <div class="h-24 bg-fuchsia-400 flex flex-row justify-between items-center px-10">
-        <a href="/"><img src="{{asset('images/logo-MyTube.svg')}}" alt="logo" class="h-24"></a>
-
-        <div class="w-[400px] border-2 border-black rounded-lg flex flex-row justify-center items-center ">
-            <input type="text" placeholder="Search for something" class="h-12 ml-7 mr-7
-        placeholder-black bg-transparent placeholder:text-center w-[400px] outline-none border-none">
-            <button type="submit" class="px-3 py-2 bg-black text-white rounded-lg mr-10 ">Search</button>
-        </div>
-    </div>
+    <x-nav></x-nav>
 
 
     <div class="flex flex-row justify-center">
@@ -37,11 +29,22 @@
                     <p>457K views • 1 month ago</p>
                 </div>
 
-
             </div>
-            <div class="flex flex-row justify-between items center h-20 ml-10 mr-4 mt-6 rounded-lg bg-gray-600">
 
+            <div class="flex flex-row justify-between items-center text-white pl-10 h-20 ml-10 mr-4 mt-6 rounded-lg bg-gray-500">
+                <div class="flex flex-row justify-center items-center space-x-6">
+                    <div class="flex flex-col justify-center items-center">
+                        <p class="font-bold text-black">{{$channel->name}}</p>
+                        <p>Subscribers: {{$channel->subscribers}}</p>
+                    </div>
+                    <form action="/subscribe" method="POST">
+                        @csrf
+                        <input type="hidden" name="id" id="id" value="{{$channel->user_id}}">
+                        <button type="submit" id="subscribe-button" class=" bg-red-500 px-5 py-3 rounded-full">SUBSCRIBE</button>
+                    </form>
+                </div>
             </div>
+
             <div class="flex flex-col bg-gray-600 h-[500px] p-5 ml-10 mr-4 my-6 rounded-lg">
                 <h1 class="text-2xl text-white font-medium">Description</h1>
                 <div class="flex flex-col border-2 border-black rounded-lg my-2 p-3">
@@ -68,6 +71,12 @@
 
     </div>
     <script>
+        const subscribeButton = document.getElementById("subscribe-button");
+
+        subscribeButton.addEventListener('click', () =>{
+            subscribeButton.classList.add('hidden')
+        })
+
         window.onload = function () {
             const video = document.getElementById('myVideo');
             setTimeout(() => {

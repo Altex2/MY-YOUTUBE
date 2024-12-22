@@ -47,4 +47,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Channel::class);
     }
+
+    public function subscribedChannels(){
+        return $this->belongsToMany(Channel::class, 'channel_subscribers');
+    }
 }

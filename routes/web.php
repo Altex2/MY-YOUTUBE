@@ -23,12 +23,15 @@ Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'destroy'])
 
 Route::get('/video/{id}', [\App\Http\Controllers\VideoController::class, 'individual']);
 
-Route::get('/videos/new', [\App\Http\Controllers\VideoController::class, 'create']);
-Route::post('/videos/new', [\App\Http\Controllers\VideoController::class, 'store']);
+Route::get('/videos/new', [\App\Http\Controllers\VideoController::class, 'create'])->middleware('auth');
+Route::post('/videos/new', [\App\Http\Controllers\VideoController::class, 'store'])->middleware('auth');
 
 Route::get('/channel/create', [\App\Http\Controllers\ChannelController::class, 'create'])->middleware('auth');
 Route::post('/channel/create', [\App\Http\Controllers\ChannelController::class, 'store'])->middleware('auth');
 
 
 Route::get('/videos/{filename}', [\App\Http\Controllers\VideoController::class, 'show']);
+
+
+Route::post('/subscribe', [\App\Http\Controllers\VideoController::class, 'subscribe']);
 

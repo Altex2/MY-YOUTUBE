@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVideoRequest;
 use App\Http\Requests\UpdateVideoRequest;
+use App\Models\User;
 use App\Models\Video;
 use FFMpeg\FFMpeg;
 use Illuminate\Http\Request;
@@ -14,6 +15,28 @@ use Illuminate\Support\Str;
 
 class VideoController extends Controller
 {
+
+    public function subscribe(Request $request)
+    {
+        $channelId = $request['id'];
+        $user = User::find($channelId);
+
+        $channel = $user->channel;
+
+        $currentUser = Auth::user();
+
+        $alreadySubscribed = $currentUser->subscribedChannels()->where('channel_id', $channelId)->exists();
+        if($alreadySubscribed){
+            return back();
+        }
+
+        $currentUser->subscribedChannels()->attach($channelId);
+
+        $channel->increment('subscribers');
+
+        return back();
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -21,9 +44,11 @@ class VideoController extends Controller
     public function individual($id){
         $video = Video::findOrFail($id);
         $videos = Video::query()->get();
+        $channel = $video->channel;
         return view('video.individual-video',[
             'video' => $video,
             'videos' => $videos,
+            'channel' => $channel,
         ]);
     }
     public function index()
@@ -53,7 +78,16 @@ class VideoController extends Controller
      */
     public function create()
     {
-        return view('video.create-video');
+        $user = Auth::user();
+
+        if($user->channel !== null){
+            return view('video.create-video',[
+                'channel' => true,
+            ]);
+        }
+        return view('video.create-video',[
+            'channel' => false,
+        ]);
     }
 
     /**
@@ -121,19 +155,19 @@ class VideoController extends Controller
 
         // Step 4: Generate a thumbnail after successful video upload
         try {
-//            $ffmpeg = \FFMpeg\FFMpeg::create([
-//                'ffmpeg.binaries'  => '/opt/homebrew/bin/ffmpeg',
-//                'ffprobe.binaries' => '/opt/homebrew/bin/ffprobe',
-//                'timeout'          => 3600,
-//                'ffmpeg.threads'   => 12,
-//            ]);
-
             $ffmpeg = \FFMpeg\FFMpeg::create([
-                'ffmpeg.binaries'  => 'C:\\ffmpeg\\bin\\ffmpeg.exe', // Path to ffmpeg.exe
-                'ffprobe.binaries' => 'C:\\ffmpeg\\bin\\ffprobe.exe', // Path to ffprobe.exe
-                'timeout'          => 3600, // Set timeout to 1 hour
-                'ffmpeg.threads'   => 12,   // Number of threads
+                'ffmpeg.binaries'  => '/opt/homebrew/bin/ffmpeg',
+                'ffprobe.binaries' => '/opt/homebrew/bin/ffprobe',
+                'timeout'          => 3600,
+                'ffmpeg.threads'   => 12,
             ]);
+
+//            $ffmpeg = \FFMpeg\FFMpeg::create([
+//                'ffmpeg.binaries'  => 'C:\\ffmpeg\\bin\\ffmpeg.exe', // Path to ffmpeg.exe
+//                'ffprobe.binaries' => 'C:\\ffmpeg\\bin\\ffprobe.exe', // Path to ffprobe.exe
+//                'timeout'          => 3600, // Set timeout to 1 hour
+//                'ffmpeg.threads'   => 12,   // Number of threads
+//            ]);
 
 
             $video = $ffmpeg->open($videoFullPath);

@@ -16,4 +16,10 @@ class Channel extends Model
     public function videos(){
         return $this->hasMany(Video::class);
     }
+
+    public function subscribers()
+    {
+        return $this->belongsToMany(User::class, 'channel_subscribers');
+    }
+
 }
