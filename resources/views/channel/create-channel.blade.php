@@ -7,7 +7,7 @@
                 <div class="flex flex-col">
                     <label for="name">Channel Name</label>
                     <input type="text" name="name" id="name"
-                           class=" pl-6 w-[400px] h-12 border-2 border-black rounded-lg bg-amber-200"
+                           class=" pl-6 w-[400px] h-12 border-2 border-black rounded-lg bg-gray-800"
                            value="{{old('name')}}">
                     @error('name')
                     <p class="text-red-500 text-sm">{{$message}}</p>
@@ -16,8 +16,8 @@
                 <input type="hidden" name="subscribers" id="subscribers" value="0">
 
                 <div class="flex flex-row space-x-6 justify-center items-center">
-                    <button type="submit" class="px-6 py-4 bg-fuchsia-300 rounded-lg">Create Channel</button>
-                    <a href="/" class="px-6 py-4 bg-red-300 rounded-lg">Cancel</a>
+                    <a href="/" class="px-6 py-4 bg-red-400 rounded-lg">Cancel</a>
+                    <button type="submit" class="px-6 py-4 bg-black rounded-lg">Create Channel</button>
                 </div>
 
             </div>

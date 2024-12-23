@@ -1,10 +1,10 @@
 <x-layout>
-    <div class="h-24 bg-fuchsia-400 flex flex-row justify-between items-center px-10 border-b-2 border-black">
+    <div class="h-24 bg-gray-500 flex flex-row justify-between items-center px-10 border-b-2 border-black">
         <a href="/"><img src="{{asset('images/logo-MyTube.svg')}}" alt="logo" class="h-24"></a>
 
-        <div class="w-[400px] border-2 border-black rounded-lg flex flex-row justify-center items-center ">
+        <div class="w-[400px] border-2 border-black rounded-lg text-white flex flex-row justify-center items-center ">
             <input type="text" placeholder="Search for something" class="h-12 ml-7 mr-7
-        placeholder-black bg-transparent placeholder:text-center w-[400px] outline-none border-none">
+        placeholder-white bg-transparent placeholder:text-center w-[400px] outline-none border-none">
             <button type="submit" class="px-3 py-2 bg-black text-white rounded-lg mr-10 ">Search</button>
         </div>
 
@@ -19,9 +19,9 @@
             @endguest
             @auth
                 @if($channel != null)
-                    <div class="flex flex-col">
+                    <div class="flex flex-col text-white">
                         <button id="active-channel-button"
-                                class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-blue-600">{{$channel['name']}}</button>
+                                class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-black">{{$channel['name']}}</button>
                         <div class="hidden absolute translate-y-16 space-y-4" id="active-channel-div">
                             <a href="/videos/new" class="px-6 py-4 bg-black rounded-lg text-white">New Video...</a>
                             <form action="/logout" method="POST">
@@ -33,7 +33,7 @@
                 @else
                     <div class="flex flex-col">
                         <button id="active-channel-button"
-                                class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-blue-600">No Channel!</button>
+                                class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-black">No Channel!</button>
                         <div class="hidden absolute translate-y-16 space-y-4" id="active-channel-div">
                             <a href="/channel/create" class="px-6 py-4 bg-black rounded-lg text-white">New Channel...</a>
                             <form action="/logout" method="POST">
@@ -54,7 +54,7 @@
         <div class="grid grid-cols-4 2xl:grid-cols-5 mx-10 gap-6 my-10">
             @foreach($videos as $video)
                 <a href="/video/{{$video['id']}}"
-                   class="flex flex-col  min-w-64 min-h-64 bg-gray-900 p-2 rounded-lg shadow-lg">
+                   class="flex flex-col  min-w-64 min-h-64 bg-gray-500 p-2 rounded-lg shadow-lg">
                     <div class="relative hover:brightness-50">
                         <img
                             src="{{asset('storage/' . $video['thumbnail'])}}"
@@ -68,7 +68,7 @@
                         <p>{{$video['title']}}</p>
                     </div>
                     <div class="text-white text-sm">
-                        <p>457K views • 1 month ago</p>
+                        <p>{{$video["views"]}} • {{Illuminate\Support\Carbon::parse($video["created_at"])->format('Y-m-d')}}</p>
                     </div>
                 </a>
             @endforeach

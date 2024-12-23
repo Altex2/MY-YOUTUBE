@@ -4,7 +4,7 @@
 
     <div class="flex flex-row justify-center">
         <div class="flex flex-col">
-            <div class="flex flex-col w-[900px] h-[450px] bg-gray-600  ml-10 mr-4 mt-10 rounded-lg">
+            <div class="flex flex-col w-[900px] h-[450px] bg-gray-600  ml-10 mr-4 mt-10 rounded-lg pb-5">
                 <!-- Video controls -->
                 <video
                     controls
@@ -25,9 +25,6 @@
                     class="mx-10 text-white font-bold text-lg">
                     <p>{{$video['title']}}</p>
                 </div>
-                <div class="text-white text-sm mx-10 mb-3">
-                    <p>457K views • 1 month ago</p>
-                </div>
 
             </div>
 
@@ -38,9 +35,9 @@
                         <p>Subscribers: {{$channel->subscribers}}</p>
                     </div>
                     @if(isset($owner))
-                        <a href="/">Manage Channel</a>
+                        <a href="/" class="bg-green-500 px-5 py-3 rounded-full">Manage Channel</a>
                     @else
-                        @if($subscribed == true)
+                        @if($subscribed)
                             <form action="/unsubscribe" method="POST">
                                 @csrf
                                 <input type="hidden" name="id" id="id" value="{{$channel->user_id}}">
@@ -59,28 +56,44 @@
                 <div class="flex flex-row justify-center items-center text-black space-x-4">
                     <div class="">
                         <form action="/like" method="POST">
-                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-2">Like</button>
+                            @csrf
+                            <input type="hidden" name="id" id="id" value="{{$video->id}}">
+                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-thumbs-up"></i> Like</button>
+                        </form>
+                    </div>
+                    <div class="">
+                        <form action="/dislike" method="POST">
+                            @csrf
+                            <input type="hidden" name="id" id="id" value="{{$video->id}}">
+                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-thumbs-down"></i> Dislike</button>
                         </form>
                     </div>
                     <div class="">
                         <form action="/share" method="POST">
-                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-2">Share</button>
+                            @csrf
+                            <input type="hidden" name="id" id="id" value="{{$video->id}}">
+                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-share"></i> Share</button>
                         </form>
                     </div>
                 </div>
             </div>
 
             <div class="flex flex-col bg-gray-600 h-[500px] p-5 ml-10 mr-4 my-6 rounded-lg">
-                <h1 class="text-2xl text-white font-medium">Description</h1>
-                <div class="flex flex-col border-2 border-black rounded-lg my-2 p-3">
+                <div class="flex flex-row justify-between items-center">
+                    <h1 class="text-2xl text-white font-medium">Description</h1>
+                    <div class="text-white text-sm mx-10">
+                        <p>{{$video['views']}} views • {{$formattedDate}}</p>
+                    </div>
+                </div>
+                <div class="flex flex-col border-2 border-black h-full text-white rounded-lg my-2 p-3">
                     <p>{{$video['description']}}</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-col w-[350px] min-h-[200px] bg-gray-600  mr-10 my-10 rounded-lg">
+        <div class="flex flex-col w-[350px] min-h-[200px] bg-gray-600 text-white  mr-10 my-10 rounded-lg">
             @foreach($videos as $vid)
-                <a href="/video/{{$vid['id']}}" class="m-5 p-2 h-44 bg-red-500 rounded-lg">
+                <a href="/video/{{$vid['id']}}" class="m-5 p-2 h-52 bg-gray-500 rounded-lg">
                     <img
                         src="{{asset('storage/' . $vid['thumbnail'])}}"
                         alt="Thumbnail"

@@ -10,7 +10,7 @@
                     <div class="flex flex-col">
                         <label for="title">Video Title</label>
                         <input type="text" name="title" id="title"
-                               class=" pl-6 w-[400px] h-12 border-2 border-black rounded-lg bg-amber-200"
+                               class=" pl-6 w-[400px] h-12 border-2 border-black rounded-lg bg-gray-800"
                                value="{{old('title')}}">
                         @error('title')
                         <p class="text-red-500 text-sm">{{$message}}</p>
@@ -19,7 +19,7 @@
                     <div class="flex flex-col">
                         <label for="description">Video Description</label>
                         <textarea type="text" name="description" id="description"
-                                  class="pl-6 w-[400px] border-2 border-black rounded-lg resize-none bg-amber-200 h-[300px]">{{old('description')}}</textarea>
+                                  class="pl-6 w-[400px] border-2 border-black rounded-lg resize-none bg-gray-800 h-[300px]">{{old('description')}}</textarea>
                         @error('description')
                         <p class="text-red-500 text-sm">{{$message}}</p>
                         @enderror
@@ -36,8 +36,8 @@
                     </div>
 
                     <div class="flex flex-row space-x-6 justify-center items-center">
-                        <button type="submit" class="px-6 py-4 bg-fuchsia-300 rounded-lg">Upload Video</button>
-                        <a href="/"  class="px-6 py-4 bg-red-300 rounded-lg">Cancel</a>
+                        <a href="/"  class="px-6 py-4 bg-red-400 rounded-lg">Cancel</a>
+                        <button type="submit" class="px-6 py-4 bg-black rounded-lg">Upload Video</button>
                     </div>
 
                 </div>

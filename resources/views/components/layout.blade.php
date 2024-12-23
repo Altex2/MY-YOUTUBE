@@ -8,7 +8,7 @@
     @vite("./resources/css/app.css")
     <title>Laravel Project</title>
 </head>
-<body class="bg-amber-200">
+<body class="bg-gray-800 text-white">
 {{$slot}}
 </body>
 </html>

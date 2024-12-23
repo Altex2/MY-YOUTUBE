@@ -6,12 +6,16 @@ use App\Http\Requests\StoreVideoRequest;
 use App\Http\Requests\UpdateVideoRequest;
 use App\Models\User;
 use App\Models\Video;
+
 use FFMpeg\FFMpeg;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use function Laravel\Prompts\form;
 
 class VideoController extends Controller
 {
@@ -63,6 +67,11 @@ class VideoController extends Controller
 
     public function individual($id){
         $video = Video::findOrFail($id);
+
+        $video->increment('views');
+
+        $formattedDate = Carbon::parse($video["created_at"])->format('Y-m-d');
+
         $videos = Video::query()->get();
         $channel = $video->channel;
         $channelId = $channel["id"];
@@ -78,6 +87,7 @@ class VideoController extends Controller
                     'video' => $video,
                     'videos' => $videos,
                     'channel' => $channel,
+                    'formattedDate' => $formattedDate,
                     'owner' => true,
                 ]);
             }
@@ -87,6 +97,7 @@ class VideoController extends Controller
                     'video' => $video,
                     'videos' => $videos,
                     'channel' => $channel,
+                    'formattedDate' => $formattedDate,
                     'subscribed' => true,
                 ]);
             }
@@ -95,6 +106,7 @@ class VideoController extends Controller
                     'video' => $video,
                     'videos' => $videos,
                     'channel' => $channel,
+                    'formattedDate' => $formattedDate,
                     'subscribed' => false,
                 ]);
             }
@@ -105,9 +117,11 @@ class VideoController extends Controller
             'video' => $video,
             'videos' => $videos,
             'channel' => $channel,
+            'formattedDate' => $formattedDate,
             'subscribed' => false,
         ]);
     }
+
     public function index()
     {
         $videos = Video::query()->get();
