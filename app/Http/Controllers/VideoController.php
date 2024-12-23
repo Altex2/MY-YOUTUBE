@@ -18,12 +18,16 @@ class VideoController extends Controller
 
     public function subscribe(Request $request)
     {
-        $channelId = $request['id'];
-        $user = User::find($channelId);
+        if(!Auth::user()){
+            return view("auth.login");
+        }
+        $userId = $request['id'];
+        $user = User::find($userId);
+        $currentUser = Auth::user();
 
         $channel = $user->channel;
+        $channelId = $channel['id'];
 
-        $currentUser = Auth::user();
 
         $alreadySubscribed = $currentUser->subscribedChannels()->where('channel_id', $channelId)->exists();
         if($alreadySubscribed){
@@ -33,6 +37,22 @@ class VideoController extends Controller
         $currentUser->subscribedChannels()->attach($channelId);
 
         $channel->increment('subscribers');
+
+        return back();
+
+
+    }
+
+    public function unsubscribe(Request $request){
+        $ownerID = $request['id'];
+        $owner = User::find($ownerID);
+        $channel = $owner->channel;
+
+        $user = Auth::user();
+
+        $user->subscribedChannels()->detach($channel['id']);
+
+        $channel->decrement('subscribers');
 
         return back();
     }
@@ -45,10 +65,47 @@ class VideoController extends Controller
         $video = Video::findOrFail($id);
         $videos = Video::query()->get();
         $channel = $video->channel;
+        $channelId = $channel["id"];
+        $ownerId = $channel["user_id"];
+
+
+
+        if(Auth::user()){
+            $user = Auth::user();
+
+            if($user['id'] == $ownerId){
+                return view('video.individual-video',[
+                    'video' => $video,
+                    'videos' => $videos,
+                    'channel' => $channel,
+                    'owner' => true,
+                ]);
+            }
+            $subscribed = $user->subscribedChannels()->where("channel_id", $channelId)->exists();
+            if($subscribed){
+                return view('video.individual-video',[
+                    'video' => $video,
+                    'videos' => $videos,
+                    'channel' => $channel,
+                    'subscribed' => true,
+                ]);
+            }
+            else{
+                return view('video.individual-video',[
+                    'video' => $video,
+                    'videos' => $videos,
+                    'channel' => $channel,
+                    'subscribed' => false,
+                ]);
+            }
+        }
+
+
         return view('video.individual-video',[
             'video' => $video,
             'videos' => $videos,
             'channel' => $channel,
+            'subscribed' => false,
         ]);
     }
     public function index()

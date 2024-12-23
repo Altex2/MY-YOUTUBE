@@ -34,4 +34,5 @@ Route::get('/videos/{filename}', [\App\Http\Controllers\VideoController::class, 
 
 
 Route::post('/subscribe', [\App\Http\Controllers\VideoController::class, 'subscribe']);
+Route::post('/unsubscribe', [\App\Http\Controllers\VideoController::class, 'unsubscribe']);
 

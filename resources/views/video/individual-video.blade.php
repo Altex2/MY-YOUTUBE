@@ -31,17 +31,42 @@
 
             </div>
 
-            <div class="flex flex-row justify-between items-center text-white pl-10 h-20 ml-10 mr-4 mt-6 rounded-lg bg-gray-500">
+            <div class="flex flex-row justify-between items-center text-white px-10 h-20 ml-10 mr-4 mt-6 rounded-lg bg-gray-500">
                 <div class="flex flex-row justify-center items-center space-x-6">
                     <div class="flex flex-col justify-center items-center">
                         <p class="font-bold text-black">{{$channel->name}}</p>
                         <p>Subscribers: {{$channel->subscribers}}</p>
                     </div>
-                    <form action="/subscribe" method="POST">
-                        @csrf
-                        <input type="hidden" name="id" id="id" value="{{$channel->user_id}}">
-                        <button type="submit" id="subscribe-button" class=" bg-red-500 px-5 py-3 rounded-full">SUBSCRIBE</button>
-                    </form>
+                    @if(isset($owner))
+                        <a href="/">Manage Channel</a>
+                    @else
+                        @if($subscribed == true)
+                            <form action="/unsubscribe" method="POST">
+                                @csrf
+                                <input type="hidden" name="id" id="id" value="{{$channel->user_id}}">
+                                <button type="submit" class=" bg-gray-950 px-5 py-3 rounded-full">UNSUBSCRIBE</button>
+                            </form>
+                        @else
+                            <form action="/subscribe" method="POST">
+                                @csrf
+                                <input type="hidden" name="id" id="id" value="{{$channel->user_id}}">
+                                <button type="submit" id="subscribe-button" class=" bg-red-500 px-5 py-3 rounded-full">SUBSCRIBE</button>
+                            </form>
+                        @endif
+                    @endif
+
+                </div>
+                <div class="flex flex-row justify-center items-center text-black space-x-4">
+                    <div class="">
+                        <form action="/like" method="POST">
+                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-2">Like</button>
+                        </form>
+                    </div>
+                    <div class="">
+                        <form action="/share" method="POST">
+                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-2">Share</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -71,11 +96,6 @@
 
     </div>
     <script>
-        const subscribeButton = document.getElementById("subscribe-button");
-
-        subscribeButton.addEventListener('click', () =>{
-            subscribeButton.classList.add('hidden')
-        })
 
         window.onload = function () {
             const video = document.getElementById('myVideo');
