@@ -51,4 +51,12 @@ class User extends Authenticatable
     public function subscribedChannels(){
         return $this->belongsToMany(Channel::class, 'channel_subscribers');
     }
+
+    public function likedVideos(){
+        return $this->belongsToMany(Video::class);
+    }
+
+    public function dislikedVideos(){
+        return $this->belongsToMany(Video::class);
+    }
 }

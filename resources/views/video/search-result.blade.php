@@ -20,7 +20,7 @@
             @endguest
             @auth
                 @if($channel != null)
-                    <div class="flex flex-col z-50">
+                    <div class="flex flex-col text-white">
                         <button id="active-channel-button"
                                 class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-black">{{$channel['name']}}</button>
                         <div class="hidden absolute translate-y-16 space-y-4" id="active-channel-div">
@@ -32,7 +32,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="flex flex-col z-50">
+                    <div class="flex flex-col">
                         <button id="active-channel-button"
                                 class="relative  px-5 py-3 w-44 max-w-44 overflow-x-hidden rounded-xl bg-black">No Channel!</button>
                         <div class="hidden absolute translate-y-16 space-y-4" id="active-channel-div">
@@ -52,7 +52,7 @@
 
 
     @if($videos->all() != null)
-        <div class="grid grid-cols-4 2xl:grid-cols-5 mx-10 gap-6 my-10 z-10">
+        <div class="grid grid-cols-4 2xl:grid-cols-5 mx-10 gap-6 my-10">
             @foreach($videos as $video)
                 <a href="/video/{{$video['id']}}"
                    class="flex flex-col  min-w-64 min-h-64 bg-gray-500 p-2 rounded-lg shadow-lg">
@@ -76,8 +76,8 @@
         </div>
     @else
         <div class="flex flex-col justify-center items-center  text-center mt-10 mb-6">
-            <h1 class="text-2xl font-medium italic text-red-500">There are NO videos on the website</h1>
-            <p class="text-cyan-500">Add a video right now :3</p>
+            <h1 class="text-2xl font-medium italic text-red-500">There are NO videos that match your search!</h1>
+            <p class="text-cyan-500">But you can add a video right now :3</p>
         </div>
     @endif
 

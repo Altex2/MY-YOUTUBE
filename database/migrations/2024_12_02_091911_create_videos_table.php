@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('video');
             $table->string('thumbnail');
             $table->integer('likes');
+            $table->integer('dislikes');
             $table->integer('views');
             $table->timestamps();
         });

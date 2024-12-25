@@ -19,6 +19,26 @@ use function Laravel\Prompts\form;
 
 class VideoController extends Controller
 {
+    public function search(Request $request){
+
+        $videos = Video::with(['channel'])->where('title', 'like', '%'.$request['q'].'%')->get();
+
+
+        if(Auth::check()){
+            $user = Auth::user();
+            $channel = $user->channel;
+
+            return view('video.search-result', [
+                'videos' => $videos,
+                'user' => $user,
+                'channel' => $channel,
+            ]);
+        }
+
+        return view('video.search-result', [
+            'videos' => $videos
+        ]);
+    }
 
     public function subscribe(Request $request)
     {
@@ -59,6 +79,20 @@ class VideoController extends Controller
         $channel->decrement('subscribers');
 
         return back();
+    }
+
+    public function like(Request $request){
+        if (!Auth::user()){
+            return view('auth.login');
+        }
+
+        $user = Auth::user();
+
+        $videoID = $request['id'];
+        $video = Video::find($videoID);
+
+
+
     }
 
     /**
@@ -256,6 +290,7 @@ class VideoController extends Controller
             'video' => $videoPath, // Relative path to the video
             'thumbnail' => 'thumbnails/' . $thumbnailFileName, // Relative path to the thumbnail
             'likes' => 0,
+            'dislikes' => 0,
             'views' => 0,
         ]);
 
