@@ -34,6 +34,7 @@ Route::get('/videos/{filename}', [\App\Http\Controllers\VideoController::class, 
 
 Route::post('/search', [\App\Http\Controllers\VideoController::class, 'search']);
 Route::post('/like', [\App\Http\Controllers\VideoController::class , 'like']);
+Route::post('/dislike', [\App\Http\Controllers\VideoController::class, 'dislike']);
 Route::post('/subscribe', [\App\Http\Controllers\VideoController::class, 'subscribe']);
 Route::post('/unsubscribe', [\App\Http\Controllers\VideoController::class, 'unsubscribe']);
 

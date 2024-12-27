@@ -58,22 +58,18 @@
                         <form action="/like" method="POST">
                             @csrf
                             <input type="hidden" name="id" id="id" value="{{$video->id}}">
-                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-thumbs-up"></i> Like</button>
+                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-thumbs-up"></i> {{$video['likes']}} Likes</button>
                         </form>
                     </div>
                     <div class="">
                         <form action="/dislike" method="POST">
                             @csrf
                             <input type="hidden" name="id" id="id" value="{{$video->id}}">
-                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-thumbs-down"></i> Dislike</button>
+                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-thumbs-down"></i> {{$video['dislikes']}} Dislikes</button>
                         </form>
                     </div>
                     <div class="">
-                        <form action="/share" method="POST">
-                            @csrf
-                            <input type="hidden" name="id" id="id" value="{{$video->id}}">
-                            <button type="submit" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-share"></i> Share</button>
-                        </form>
+                            <button id="share-btn" data-url="{{ url()->current() }}" class="bg-gray-300 rounded-full px-6 py-3"><i class="fa-solid fa-share"></i> Share</button>
                     </div>
                 </div>
             </div>
@@ -108,6 +104,19 @@
         </div>
 
     </div>
+
+    <script>
+            const shareButton = document.getElementById('share-btn');
+            shareButton.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+                shareButton.classList.remove('bg-gray-300')
+                shareButton.classList.add('bg-gray-600');
+            navigator.clipboard.writeText(url).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+    </script>
+
     <script>
 
         window.onload = function () {

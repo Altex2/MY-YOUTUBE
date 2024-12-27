@@ -53,10 +53,10 @@ class User extends Authenticatable
     }
 
     public function likedVideos(){
-        return $this->belongsToMany(Video::class);
+        return $this->belongsToMany(Video::class, 'user_likes');
     }
 
     public function dislikedVideos(){
-        return $this->belongsToMany(Video::class);
+        return $this->belongsToMany(Video::class, 'user_dislikes');
     }
 }

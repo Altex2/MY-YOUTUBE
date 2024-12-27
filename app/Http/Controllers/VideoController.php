@@ -19,12 +19,13 @@ use function Laravel\Prompts\form;
 
 class VideoController extends Controller
 {
-    public function search(Request $request){
+    public function search(Request $request)
+    {
 
-        $videos = Video::with(['channel'])->where('title', 'like', '%'.$request['q'].'%')->get();
+        $videos = Video::with(['channel'])->where('title', 'like', '%' . $request['q'] . '%')->get();
 
 
-        if(Auth::check()){
+        if (Auth::check()) {
             $user = Auth::user();
             $channel = $user->channel;
 
@@ -42,7 +43,7 @@ class VideoController extends Controller
 
     public function subscribe(Request $request)
     {
-        if(!Auth::user()){
+        if (!Auth::user()) {
             return view("auth.login");
         }
         $userId = $request['id'];
@@ -54,7 +55,7 @@ class VideoController extends Controller
 
 
         $alreadySubscribed = $currentUser->subscribedChannels()->where('channel_id', $channelId)->exists();
-        if($alreadySubscribed){
+        if ($alreadySubscribed) {
             return back();
         }
 
@@ -67,7 +68,8 @@ class VideoController extends Controller
 
     }
 
-    public function unsubscribe(Request $request){
+    public function unsubscribe(Request $request)
+    {
         $ownerID = $request['id'];
         $owner = User::find($ownerID);
         $channel = $owner->channel;
@@ -81,8 +83,9 @@ class VideoController extends Controller
         return back();
     }
 
-    public function like(Request $request){
-        if (!Auth::user()){
+    public function like(Request $request)
+    {
+        if (!Auth::user()) {
             return view('auth.login');
         }
 
@@ -91,15 +94,57 @@ class VideoController extends Controller
         $videoID = $request['id'];
         $video = Video::find($videoID);
 
+        if ($user->likedVideos()->where('video_id', $videoID)->exists()) {
+            $user->likedVideos()->detach($videoID);
+            $video->decrement('likes');
+            return back();
+        }
+        if($user->dislikedVideos()->where('video_id', $videoID)->exists()){
+            $user->dislikedVideos()->detach($videoID);
+            $video->decrement('dislikes');
 
+            $user->likedVideos()->attach($videoID);
+            $video->increment('likes');
+            return back();
+        }
+        $user->likedVideos()->attach($videoID);
+        $video->increment('likes');
+        return back();
 
+    }
+
+    public function dislike(Request $request){
+        if(!Auth::user()){
+            return view('auth.login');
+        }
+        $user = Auth::user();
+        $videoID = $request['id'];
+        $video = Video::find($videoID);
+
+        if($user->dislikedVideos()->where('video_id', $videoID)->exists()){
+            $user->dislikedVideos()->detach($videoID);
+            $video->decrement('dislikes');
+            return back();
+        }
+        if($user->likedVideos()->where('video_id', $videoID)->exists()){
+            $user->likedVideos()->detach($videoID);
+            $video->decrement('likes');
+
+            $user->dislikedVideos()->attach($videoID);
+            $video->increment('dislikes');
+            return back();
+        }
+        $user->dislikedVideos()->attach($videoID);
+        $video->increment('dislikes');
+        return back();
     }
 
     /**
      * Display a listing of the resource.
      */
 
-    public function individual($id){
+    public function individual($id)
+    {
         $video = Video::findOrFail($id);
 
         $video->increment('views');
@@ -112,12 +157,11 @@ class VideoController extends Controller
         $ownerId = $channel["user_id"];
 
 
-
-        if(Auth::user()){
+        if (Auth::user()) {
             $user = Auth::user();
 
-            if($user['id'] == $ownerId){
-                return view('video.individual-video',[
+            if ($user['id'] == $ownerId) {
+                return view('video.individual-video', [
                     'video' => $video,
                     'videos' => $videos,
                     'channel' => $channel,
@@ -126,17 +170,16 @@ class VideoController extends Controller
                 ]);
             }
             $subscribed = $user->subscribedChannels()->where("channel_id", $channelId)->exists();
-            if($subscribed){
-                return view('video.individual-video',[
+            if ($subscribed) {
+                return view('video.individual-video', [
                     'video' => $video,
                     'videos' => $videos,
                     'channel' => $channel,
                     'formattedDate' => $formattedDate,
                     'subscribed' => true,
                 ]);
-            }
-            else{
-                return view('video.individual-video',[
+            } else {
+                return view('video.individual-video', [
                     'video' => $video,
                     'videos' => $videos,
                     'channel' => $channel,
@@ -147,7 +190,7 @@ class VideoController extends Controller
         }
 
 
-        return view('video.individual-video',[
+        return view('video.individual-video', [
             'video' => $video,
             'videos' => $videos,
             'channel' => $channel,
@@ -160,7 +203,7 @@ class VideoController extends Controller
     {
         $videos = Video::query()->get();
 
-        if(Auth::check()){
+        if (Auth::check()) {
             $user = Auth::user();
             $channel = $user->channel;
 
@@ -177,7 +220,6 @@ class VideoController extends Controller
     }
 
 
-
     /**
      * Show the form for creating a new resource.
      */
@@ -185,12 +227,12 @@ class VideoController extends Controller
     {
         $user = Auth::user();
 
-        if($user->channel !== null){
-            return view('video.create-video',[
+        if ($user->channel !== null) {
+            return view('video.create-video', [
                 'channel' => true,
             ]);
         }
-        return view('video.create-video',[
+        return view('video.create-video', [
             'channel' => false,
         ]);
     }
@@ -198,32 +240,6 @@ class VideoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-//    public function store(Request $request)
-//    {
-//
-//        $credentials = $request->validate([
-//            'title' => 'required|string',
-//            'description' => 'required|string',
-//            'video_file' => 'required|file| mimes:mp4,mov,ogg,qt | max:50000',
-//        ]);
-//
-//        $path = Storage::disk('public')->put('videos', $request['video_file']);
-//
-//        $thumbnail =
-//        Video::create([
-//            'title' => $credentials['title'],
-//            'description' => $credentials['description'],
-//            'video' => $path,
-//            'thumbnail' =>
-//        ]);
-//
-//        $videos = Video::query()->get();
-//
-//        return redirect('/');
-//
-//    }
-//
-
 
     public function store(Request $request)
     {
@@ -261,10 +277,10 @@ class VideoController extends Controller
         // Step 4: Generate a thumbnail after successful video upload
         try {
             $ffmpeg = \FFMpeg\FFMpeg::create([
-                'ffmpeg.binaries'  => '/opt/homebrew/bin/ffmpeg',
+                'ffmpeg.binaries' => '/opt/homebrew/bin/ffmpeg',
                 'ffprobe.binaries' => '/opt/homebrew/bin/ffprobe',
-                'timeout'          => 3600,
-                'ffmpeg.threads'   => 12,
+                'timeout' => 3600,
+                'ffmpeg.threads' => 12,
             ]);
 
 //            $ffmpeg = \FFMpeg\FFMpeg::create([
@@ -294,63 +310,8 @@ class VideoController extends Controller
             'views' => 0,
         ]);
 
-        return redirect('/')->with('success', 'Video uploaded and thumbnail generated successfully!');
+        return redirect('/');
     }
-
-//    public function store(Request $request)
-//    {
-//        // Step 1: Validate the input
-//        $credentials = $request->validate([
-//            'title' => 'required|string',
-//            'description' => 'required|string',
-//            'video_file' => 'required|file|mimes:mp4,mov,ogg,qt|max:50000',
-//        ]);
-//
-//        // Step 2: Upload the video file
-//        try {
-//            $videoPath = Storage::disk('public')->put('videos', $request->file('video_file'));
-//        } catch (\Exception $e) {
-//            return response()->json(['error' => 'Failed to upload video: ' . $e->getMessage()], 500);
-//        }
-//
-//        $videoFullPath = storage_path('app/public/' . $videoPath);
-//
-//        // Step 3: Create a thumbnail directory and path
-//        $thumbnailDirectory = storage_path('app/public/thumbnails');
-//        if (!File::exists($thumbnailDirectory)) {
-//            File::makeDirectory($thumbnailDirectory, 0755, true); // Create directory with write permissions
-//        }
-//
-//        $thumbnailFileName = preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($request->file('video_file')->getClientOriginalName(), PATHINFO_FILENAME)) . '.jpg';
-//        $thumbnailFullPath = $thumbnailDirectory . '/' . $thumbnailFileName;
-//
-//        // Step 4: Generate a thumbnail after successful video upload
-//        try {
-//            $ffmpeg = \FFMpeg\FFMpeg::create([
-//                'ffmpeg.binaries'  => '/opt/homebrew/bin/ffmpeg',
-//                'ffprobe.binaries' => '/opt/homebrew/bin/ffprobe',
-//                'timeout'          => 3600,
-//                'ffmpeg.threads'   => 12,
-//            ]);
-//
-//            $video = $ffmpeg->open($videoFullPath);
-//            $video->frame(\FFMpeg\Coordinate\TimeCode::fromSeconds(0))
-//                ->save($thumbnailFullPath);
-//        } catch (\Exception $e) {
-//            return response()->json(['error' => 'Failed to generate thumbnail: ' . $e->getMessage()], 500);
-//        }
-//
-//        // Step 5: Save the video and thumbnail paths in the database
-//        Video::create([
-//            'title' => $credentials['title'],
-//            'description' => $credentials['description'],
-//            'video' => $videoPath, // Relative path to the video
-//            'thumbnail' => 'thumbnails/' . $thumbnailFileName, // Relative path to the thumbnail
-//        ]);
-//
-//        return redirect('/')->with('success', 'Video uploaded and thumbnail generated successfully!');
-//    }
-
 
 
     /**
